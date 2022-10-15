@@ -16,6 +16,7 @@ def sign_up(request):
             user = form.save()
             registered = True
             user_profile = UserProfile(user=user)
+            user_profile.save()
             return HttpResponseRedirect(reverse('App_Login:login'))
 
     return render(request, 'App_Login/signup.html', context={'title': 'Sign Up', 'form': form})
@@ -38,4 +39,11 @@ def login_page(request):
 
 @login_required
 def edit_profile(request):
-    pass
+    current_user = UserProfile.objects.get(user=request.user)
+    form = EditProfile(instance=current_user)
+    if request.method == 'POST':
+        form = EditProfile(request.POST, request.FILES, instance=current_user)
+        if form.is_valid():
+            form.save(commit=True)
+            form = EditProfile(instance=current_user)
+    return render(request, 'App_Login/profile.html', context={'form': form, 'title': 'Edit Profile'})
