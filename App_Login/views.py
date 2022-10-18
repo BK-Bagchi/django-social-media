@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from .forms import *
 from .models import *
@@ -69,3 +70,13 @@ def profile(request):
             post.save()
             return HttpResponseRedirect(reverse('home'))
     return render(request, 'App_Login/user.html', context={'title': 'User', 'form': form})
+
+
+@login_required
+def user(request, username):
+    user_other = User.objects.get(username=username)
+    already_followed = Follow.objects.filter(
+        follower=request.user, following=user_other)
+    if user_other == request.user:
+        return HttpResponseRedirect(reverse('App_Login:profile'))
+    return render(request, 'App_Login/user_other.html', context={'user_other': user_other, 'already_followed': already_followed})

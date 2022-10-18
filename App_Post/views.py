@@ -13,7 +13,6 @@ def home(request):
         author__in=following_list.values_list('following'))
     liked_post = Like.objects.filter(user=request.user)
     liked_post_list = liked_post.values_list('post', flat=True)
-    print(liked_post_list)
     if request.method == 'GET':
         search = request.GET.get('search', '')
         result = User.objects.filter(username__icontains=search)
