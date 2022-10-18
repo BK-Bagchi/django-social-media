@@ -3,8 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+
 from .forms import *
 from .models import *
+from App_Post.forms import *
 
 
 def sign_up(request):
@@ -46,6 +48,7 @@ def edit_profile(request):
         if form.is_valid():
             form.save(commit=True)
             form = EditProfile(instance=current_user)
+            return HttpResponseRedirect(reverse('App_Login:profile'))
     return render(request, 'App_Login/profile.html', context={'form': form, 'title': 'Edit Profile'})
 
 
@@ -53,3 +56,16 @@ def edit_profile(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect(reverse('App_Login:login'))
+
+
+@login_required
+def profile(request):
+    form = PostForm()
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return HttpResponseRedirect(reverse('home'))
+    return render(request, 'App_Login/user.html', context={'title': 'User', 'form': form})
