@@ -2,6 +2,7 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect, render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
 from .models import *
 from App_Login.models import *
 
@@ -16,4 +17,4 @@ def home(request):
     if request.method == 'GET':
         search = request.GET.get('search', '')
         result = User.objects.filter(username__icontains=search)
-    return render(request, 'App_Posts/home.html', context={'title': 'Home', 'search': search, 'result': result, 'posts': posts, 'liked_post_list': liked_post_list})
+    return render(request, 'App_Post/home.html', context={'title': 'Home', 'search': search, 'result': result, 'posts': posts, 'liked_post_list': liked_post_list})
