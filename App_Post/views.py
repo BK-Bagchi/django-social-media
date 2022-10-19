@@ -18,3 +18,21 @@ def home(request):
         search = request.GET.get('search', '')
         result = User.objects.filter(username__icontains=search)
     return render(request, 'App_Post/home.html', context={'title': 'Home', 'search': search, 'result': result, 'posts': posts, 'liked_post_list': liked_post_list})
+
+
+@login_required
+def liked(request, pk):
+    post = Post.objects.get(pk=pk)
+    already_liked = Like.objects.filter(post=post, user=request.user)
+    if not already_liked:
+        liked_post = Like(post=post, user=request.user)
+        liked_post.save()
+    return HttpResponseRedirect(reverse('home'))
+
+
+@login_required
+def unliked(request, pk):
+    post = Post.objects.get(pk=pk)
+    already_liked = Like.objects.filter(post=post, user=request.user)
+    already_liked.delete()
+    return HttpResponseRedirect(reverse('home'))
