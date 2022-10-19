@@ -23,7 +23,8 @@
 
     <div class="row">
         <div class="col-sm-8">
-            {% for post in posts %}
+            {% if posts %}
+                {% for post in posts %}
                 <div style="border: 1px solid #888888;">
                     <div style="padding:10px">
                         {% if post.author.user_profile.profile_pic %}
@@ -47,6 +48,9 @@
                 <br>
                 <br>
             {% endfor %}
+            {% else %}
+                <h1>Please Follow someone to see posts here</h1>
+            {% endif %}
         </div>
         <div class="col-sm-4">
             <div class="row">
